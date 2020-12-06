@@ -24,12 +24,12 @@ router.post ('/login', (req, res) => {
 router.get('/:userId/interests', (req, res) => {
   let token = req.header("authorization").split(' ')[1];
   if (token) {
-    if (validateToken(token)) {
+    if (validateToken(token, req.params.userId)) {
       let result = interests(req.params.userId)
       res.send(result)
     }
   }
-  res.status(403)
+  res.status(401)
   res.send("Unauthorized")
 })
 

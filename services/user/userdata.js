@@ -23,14 +23,15 @@ const users = [
 
 const preferences = [
     {
-        email: "john.smith@gmail.com",
+
+        id: 1,
         interests: [
             new Interest({"language": "Java", "level": "medium"}),
             new Interest({"language": "Structured Query Language", "level": "advanced"})
         ]
     },
     {
-        email: "jane.smith@gmail.com",
+        id: 2,
         interests: []
     }
 ]
@@ -42,14 +43,14 @@ function isValid(name, pass) {
 }
 
 function getInterest(userId) {
-    let idx = preferences.findIndex(value => value.email === userId)
+    let idx = preferences.findIndex(value => value.id === Number(userId))
     if (idx > -1) {
         return preferences[idx].interests
     }
 }
 
 function addInterest(userId, interest) {
-    let idx = preferences.findIndex(value => value.email === userId)
+    let idx = preferences.findIndex(value => value.id === Number(userId))
     if (idx > -1) {
         let interests = preferences[idx].interests
         interests.push(interest)

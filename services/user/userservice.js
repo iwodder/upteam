@@ -24,6 +24,7 @@ function login(requestBody) {
 
 function createJwt(user) {
     return jwt.sign({
+        userId: user.id,
         email: user.email,
         role: user.roles,
         name: user.name
@@ -51,10 +52,10 @@ function userDetails(email) {
     return userdata.getUser(email);
 }
 
-function validateToken(token) {
+function validateToken(token, userId) {
     if (token) {
         let payload =  jwt.verify(token, secretVal)
-        return true;
+        return Number(userId) === payload.userId
     }
 }
 
