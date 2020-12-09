@@ -1,0 +1,24 @@
+<div class="modal-body">
+  <div [hidden]="submitted">
+    <div class="form-group">
+      <h1>Login Form</h1>
+      <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
+        <label for="username">Username</label>
+        <input #name="ngModel" [(ngModel)]="model.username" id="username" name="username" placeholder="Username"
+               type="text" class="form-control" required>
+        <div [hidden]="name.valid || name.pristine" class="alert alert-danger">Username is required</div>
+        <br/>
+        <label for="password">Password</label>
+        <input #pw="ngModel" [(ngModel)]="model.password" id="password" name="password" placeholder="Password"
+               type="password"
+               class="form-control" required>
+        <div [hidden]="pw.valid || pw.pristine" class="alert alert-danger">Password is required</div>
+        <br/>
+        <button type="submit" [disabled]="!loginForm.form.valid" class="form-control">Submit</button>
+      </form>
+    </div>
+  </div>
+  <div [hidden]="!submitted">
+    <div class="text-center">{{msg}}</div>
+  </div>
+</div>

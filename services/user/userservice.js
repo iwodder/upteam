@@ -10,12 +10,15 @@ function echo(string) {
 }
 
 function login(requestBody) {
-    if (requestBody.email && requestBody.password) {
-        if (userdata.isValid(requestBody.email, requestBody.password)) {
-            let u = userdata.getUser(requestBody.email)
+    let username = requestBody.username;
+    let password = requestBody.password;
+
+    if (username && password) {
+        if (userdata.isValid(username, password)) {
+            let u = userdata.getUserFromEmail(username)
             return createJwt(u);
         } else {
-            return "Invalid request data"
+            return false
         }
     } else {
         throw new Error("Malformed request");
@@ -48,8 +51,28 @@ function createInterest(userId, interests) {
     return userdata.addInterest(userId, interest)
 }
 
-function userDetails(email) {
-    return userdata.getUser(email);
+function userDetails(email, id) {
+    if (email) {
+        let user = userdata.getUserFromEmail(email);
+        user.addInterests(userdata.getInterest(user.id))
+        return user;
+    } else if (id && !email) {
+        let user = userdata.getUserFromId(id)
+        user.addInterests(userdata.getInterest(id))
+        return user
+    } else {
+        return null;
+    }
+}
+
+function userDetailsJson(email, id) {
+    if (email) {
+        return userdata.getUserFromEmail(email);
+    } else if (id && !email) {
+        return userdata.getUserFromId(id)
+    } else {
+        return null;
+    }
 }
 
 function validateToken(token, userId) {
@@ -66,7 +89,8 @@ module.exports = {
     interests,
     createInterest,
     userDetails,
-    validateToken
+    validateToken,
+    userDetailsJson
 }
 
 

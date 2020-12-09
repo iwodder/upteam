@@ -7,6 +7,7 @@ const users = [
         email: "john.smith@gmail.com",
         name: "John Smith",
         password: "passw0rd",
+        company: "Company XYZ",
         roles: [
             "user"
         ]
@@ -15,6 +16,7 @@ const users = [
         id: 2,
         email: "jane.smith@gmail.com",
         password: "abc123",
+        company: "ABC Corp.",
         roles: [
             "user", "manager"
         ]
@@ -60,8 +62,17 @@ function addInterest(userId, interest) {
     }
 }
 
-function getUser(email) {
+function getUserFromEmail(email) {
     let idx = users.findIndex(value => value.email === email)
+    if (idx > -1) {
+        return new User(users[idx]);
+    } else {
+        return null;
+    }
+}
+
+function getUserFromId(id) {
+    let idx = users.findIndex(v => v.id === id)
     if (idx > -1) {
         return new User(users[idx])
     } else {
@@ -73,5 +84,6 @@ module.exports = {
     isValid,
     getInterest,
     addInterest,
-    getUser
+    getUserFromEmail,
+    getUserFromId
 }

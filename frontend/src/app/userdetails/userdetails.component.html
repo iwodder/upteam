@@ -1,0 +1,7 @@
+
+<div *ngIf="user" class="">
+  <h1>Welcome back {{user.name}}</h1>
+  <div class="text-black-50">{{user.email}}</div>
+  <div class="text-black-50">{{user.company}}</div>
+  <button (click)="getInterests()">Interests</button>
+</div>

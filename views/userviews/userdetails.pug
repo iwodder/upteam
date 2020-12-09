@@ -1,0 +1,14 @@
+extends ../layout.pug
+
+block content
+    h1 Welcome back, #{name}
+    p=email
+    p=company
+    button(onclick="edit()") Edit Details
+    button(disabled=true, hidden=true) Save
+
+    div
+        h3 Language Interests
+        ui
+            each x in interests
+                li=x.lang
