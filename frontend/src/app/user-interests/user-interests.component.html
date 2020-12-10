@@ -1,0 +1,17 @@
+<div class="container-lg" *ngIf="interest">
+  <div class="d-flex flex-column">
+    <div class="text-center align-self-center p-2" [hidden]="isEdit">
+      {{interest.language | uppercase}} | {{interest.level | uppercase}}
+    </div>
+    <div [hidden]="!isEdit" class="align-self-center">
+      <input [(ngModel)]="interest.language" type="text" id="language" class="form-control-sm m-1 p-1" required>
+      <select [(ngModel)]="interest.level" id="level" class="form-control-sm m-1 p-1" required>
+        <option *ngFor="let lvl of levels" [value]="lvl.name">{{lvl.desc}}</option>
+      </select>
+    </div>
+    <div class="btn-group align-self-center p-3">
+      <button class="btn btn-primary" (click)="edit()">Edit</button>
+      <button class="btn btn-primary" (click)="save()" [disabled]="!isEdit">Save</button>
+    </div>
+  </div>
+</div>

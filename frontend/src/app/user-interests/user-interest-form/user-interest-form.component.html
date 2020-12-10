@@ -1,0 +1,14 @@
+<div class="container-lg">
+  <div class="d-flex flex-column">
+    <div class="align-self-center">
+      <input [(ngModel)]="interest.language" type="text" id="language" class="form-control-sm m-1 p-1" required>
+      <select [(ngModel)]="interest.level" id="level" class="form-control-sm m-1 p-1" required>
+        <option *ngFor="let lvl of levels" [ngValue]="lvl.name">{{lvl.desc}}</option>
+      </select>
+    </div>
+    <div class="btn-group align-self-center p-3">
+      <button class="btn btn-primary" (click)="save()">Save</button>
+      <button class="btn btn-primary" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+</div>
