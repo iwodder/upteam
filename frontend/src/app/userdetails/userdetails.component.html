@@ -10,8 +10,8 @@
     <div #add="ngbCollapse" [(ngbCollapse)]="hideAdd" class="m-1">
       <div class="card">
         <div class="card-body">
-          <app-user-interest-form (cancelled)="add.toggle()" [interest]="interest()" [userId]="user.id"
-                                  [levels]="levels">
+          <app-user-interest-form (cancelled)="add.toggle()" (newInterest)="addNewInterest($event); add.toggle()"
+                                  [userId]="user.id" [levels]="levels">
           </app-user-interest-form>
         </div>
       </div>
@@ -19,7 +19,8 @@
     <div #interests="ngbCollapse" [(ngbCollapse)]="isCollapsed" class="m-1">
       <div class="card" *ngFor="let i of user.interest;">
         <div class="card-body">
-          <app-user-interests (deleted)="deleted($event)" [interest]="i" [userId]="user.id" [levels]="levels"></app-user-interests>
+          <app-user-interests (deleted)="deleted($event)" [interest]="i" [userId]="user.id" [levels]="levels">
+          </app-user-interests>
         </div>
       </div>
     </div>

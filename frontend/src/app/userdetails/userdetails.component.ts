@@ -42,4 +42,10 @@ export class UserdetailsComponent implements OnInit {
       interest.splice(idx, 1);
     }
   }
+
+  addNewInterest(interest: Interest) {
+    if (this.user) {
+      this.user.interest.push(interest)
+    }
+  }
 }

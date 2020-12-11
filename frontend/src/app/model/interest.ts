@@ -1,8 +1,8 @@
 export class Interest {
 
   id: number;
-  language: string;
-  level: string;
+  public language: string;
+  public level: string;
 
   constructor(props: any) {
     this.id = props.id;

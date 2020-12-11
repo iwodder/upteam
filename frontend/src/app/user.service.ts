@@ -47,10 +47,10 @@ export class UserService {
       `/users/${id}/interests`, interest, httpOpts)
   }
 
-  addInterest(id: number, interest: Interest): Observable<any> {
+  addInterest(id: number, interest: Interest): Observable<Interest> {
     let token = this.getToken();
     httpOpts.headers = httpOpts.headers.set('Authorization', `Bearer ${token}`)
-    return this.client.put(
+    return this.client.post<Interest>(
       `/users/${id}/interests`, interest, httpOpts)
   }
 

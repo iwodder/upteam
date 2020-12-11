@@ -1,6 +1,7 @@
 import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import {Interest} from "../../model/interest";
 import {Level} from "../../model/level";
+import {UserService} from "../../user.service";
 
 
 @Component({
@@ -11,18 +12,22 @@ import {Level} from "../../model/level";
 export class UserInterestFormComponent implements OnInit {
 
   @Input() userId: number = 0;
-  @Input() interest: Interest = new Interest({language: "", level: ""});
   @Input() levels: Array<Level> = []
-
   @Output() cancelled = new EventEmitter<boolean>();
+  @Output() newInterest = new EventEmitter<Interest>();
 
-  constructor() { }
+  interest: Interest = new Interest({language: "", level: ""});
+
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
   }
 
   save() {
-
+    this.userService.addInterest(this.userId, this.interest)
+      .subscribe((res) => {
+        this.newInterest.emit(new Interest(res))
+      } )
   }
 
   cancel() {
