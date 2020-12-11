@@ -10,8 +10,9 @@
       </select>
     </div>
     <div class="btn-group align-self-center p-3">
-      <button class="btn btn-primary" (click)="edit()">Edit</button>
+      <button class="btn btn-primary" (click)="editOrCancel()">{{btnText}}</button>
       <button class="btn btn-primary" (click)="save()" [disabled]="!isEdit">Save</button>
+      <button class="btn btn-primary" (click)="delete()">Delete</button>
     </div>
   </div>
 </div>

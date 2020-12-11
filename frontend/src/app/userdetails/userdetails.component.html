@@ -1,7 +1,28 @@
-
-<div *ngIf="user" class="">
-  <h1>Welcome back {{user.name}}</h1>
-  <div class="text-black-50">{{user.email}}</div>
-  <div class="text-black-50">{{user.company}}</div>
-  <button (click)="getInterests()">Interests</button>
+<div *ngIf="user" class="container-lg mt-5">
+  <h1 class="text-lg-left">Welcome back {{user.name}}</h1>
+  <div class="text-black-50">Email: {{user.email}}</div>
+  <div class="text-black-50">Company: {{user.company}}</div>
+  <div class="container-sm mt-3">
+    <div class="btn-group-sm mt-3">
+      <button type="button" class="btn btn-outline-primary" (click)="interests.toggle()">View Interests</button>
+      <button type="button" class="btn btn-outline-primary" (click)="add.toggle()">Add Interest</button>
+    </div>
+    <div #add="ngbCollapse" [(ngbCollapse)]="hideAdd" class="m-1">
+      <div class="card">
+        <div class="card-body">
+          <app-user-interest-form (cancelled)="add.toggle()" [interest]="interest()" [userId]="user.id"
+                                  [levels]="levels">
+          </app-user-interest-form>
+        </div>
+      </div>
+    </div>
+    <div #interests="ngbCollapse" [(ngbCollapse)]="isCollapsed" class="m-1">
+      <div class="card" *ngFor="let i of user.interest;">
+        <div class="card-body">
+          <app-user-interests (deleted)="deleted($event)" [interest]="i" [userId]="user.id" [levels]="levels"></app-user-interests>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+

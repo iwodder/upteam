@@ -1,12 +1,12 @@
 import {Interest} from "./interest";
 
 export class User {
-  id: number;
-  name: string;
-  email: string;
-  roles: Array<String>;
-  company: string;
-  interest: Array<Interest>
+  public id: number;
+  public name: string;
+  public email: string;
+  public roles: Array<String>;
+  public company: string;
+  public interest: Array<Interest>
 
   constructor(props: any) {
     this.id = props.id
@@ -14,6 +14,8 @@ export class User {
     this.email = props.email;
     this.company = props.company;
     this.roles = props.roles;
-    this.interest = props.interests;
+    this.interest = props.interests.map((interest: any) => {
+      return new Interest(interest);
+    });
   }
 }

@@ -20,7 +20,7 @@ export class AppComponent {
   showLogin(): void {
     const modalRef = this.modalService.open(LoginComponent);
     modalRef.result.then(r => {
-      this.user = r;
+      this.user = new User(r);
     })
   }
 

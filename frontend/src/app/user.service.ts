@@ -1,11 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Login } from "./login/login";
+import {Injectable} from '@angular/core';
+import {Login} from "./login/login";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import { Observable, throwError } from "rxjs";
-import { catchError, retry } from "rxjs/operators";
 import {User} from "./model/user";
 import {Interest} from "./model/interest";
-import {getToken} from "codelyzer/angular/styles/cssLexer";
+import {Observable} from "rxjs";
+import {Level} from "./model/level";
 
 const httpOpts = {
   headers: new HttpHeaders({
@@ -26,23 +25,51 @@ export class UserService {
     return this.client.post<User>(
       '/users/login', login)
       .subscribe((data) => {
-        console.log(JSON.stringify(data));
         ok(data);
       }, err => {
-        console.log(err.status)
         errfn(err);
       });
   }
 
-  getInterests(id: number): void {
+  getInterests(id: number): Observable<Array<Interest>> {
     console.log("Getting interests")
     let token = this.getToken();
-    httpOpts.headers.set('Authorization', `Bearer ${token}`)
-    this.client.get<Array<Interest>>(
+    httpOpts.headers = httpOpts.headers.set('Authorization', `Bearer ${token}`)
+    return this.client.get<Array<Interest>>(
       `/users/${id}/interests`, httpOpts
-    ).subscribe(data => {
-      console.log(data)
-    })
+    )
+  }
+
+  editInterest(id: number, interest: Interest): Observable<any> {
+    let token = this.getToken();
+    httpOpts.headers = httpOpts.headers.set('Authorization', `Bearer ${token}`)
+    return this.client.put(
+      `/users/${id}/interests`, interest, httpOpts)
+  }
+
+  addInterest(id: number, interest: Interest): Observable<any> {
+    let token = this.getToken();
+    httpOpts.headers = httpOpts.headers.set('Authorization', `Bearer ${token}`)
+    return this.client.put(
+      `/users/${id}/interests`, interest, httpOpts)
+  }
+
+  deleteInterest(userId: number, interest: Interest): void {
+    let token = this.getToken();
+    httpOpts.headers = httpOpts.headers.set('Authorization', `Bearer ${token}`);
+    this.client.delete(
+      `/users/${userId}/interests/${interest.id}`, httpOpts
+    ).subscribe(value => {
+      console.log("success")
+    },error => {
+      console.log("error")
+    });
+  }
+
+  getLevels(): Observable<Array<Level>> {
+    return this.client.get<Array<Level>>(
+      '/levels'
+    );
   }
 
   private getToken(): string {
@@ -55,9 +82,8 @@ export class UserService {
       });
     console.log(token)
     if (token) {
-      let idx = token.indexOf("=");
-      let result = token.substring(++idx);
-      return result;
+      let idx = token.indexOf("=") + 1;
+      return token.substring(idx);
     } else {
       return '';
     }

@@ -5,10 +5,6 @@ const {Interest} = require("../../models/interest");
 
 const secretVal = 'somesupersecret' //Not secure
 
-function echo(string) {
-    return `Hello, ${string}`
-}
-
 function login(requestBody) {
     let username = requestBody.username;
     let password = requestBody.password;
@@ -42,21 +38,27 @@ function interests(id) {
     }
 }
 
-function addInterest(interest) {
-    userdata.addInterest()
+function createInterest(userId, interest) {
+    userdata.addInterest(userId, new Interest(interest))
 }
 
-function createInterest(userId, interests) {
+function updateInterest(userId, interests) {
     let interest = new Interest(interests);
-    return userdata.addInterest(userId, interest)
+    return userdata.editInterest(userId, interest)
 }
 
-function userDetails(email, id) {
+function userDetailsByUsername(email) {
     if (email) {
         let user = userdata.getUserFromEmail(email);
         user.addInterests(userdata.getInterest(user.id))
         return user;
-    } else if (id && !email) {
+    } else {
+        return null;
+    }
+}
+
+function userDetailsById(id) {
+    if (id) {
         let user = userdata.getUserFromId(id)
         user.addInterests(userdata.getInterest(id))
         return user
@@ -65,13 +67,11 @@ function userDetails(email, id) {
     }
 }
 
-function userDetailsJson(email, id) {
-    if (email) {
-        return userdata.getUserFromEmail(email);
-    } else if (id && !email) {
-        return userdata.getUserFromId(id)
+function deleteInterest(userId, interestId) {
+    if (userId && interestId) {
+        return userdata.deleteInterest(userId, interestId)
     } else {
-        return null;
+        throw new Error("Invalid input")
     }
 }
 
@@ -83,14 +83,15 @@ function validateToken(token, userId) {
 }
 
 module.exports = {
-    echo,
     secretVal,
     login,
     interests,
+    updateInterest,
     createInterest,
-    userDetails,
+    deleteInterest,
+    userDetailsByUsername,
     validateToken,
-    userDetailsJson
+    userDetailsById
 }
 
 

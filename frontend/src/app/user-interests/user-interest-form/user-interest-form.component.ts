@@ -11,7 +11,7 @@ import {Level} from "../../model/level";
 export class UserInterestFormComponent implements OnInit {
 
   @Input() userId: number = 0;
-  @Input() interest: Interest | undefined
+  @Input() interest: Interest = new Interest({language: "", level: ""});
   @Input() levels: Array<Level> = []
 
   @Output() cancelled = new EventEmitter<boolean>();

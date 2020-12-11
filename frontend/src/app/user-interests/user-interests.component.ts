@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Interest} from "../model/interest";
 import {UserService} from "../user.service";
 import {Level} from "../model/level";
@@ -13,7 +13,10 @@ export class UserInterestsComponent implements OnInit {
   @Input() userId: number = 0;
   @Input() interest: Interest | undefined
   @Input() levels: Array<Level> = []
+  @Output() deleted: EventEmitter<number> = new EventEmitter<number>();
+
   isEdit: boolean = false;
+  btnText: string = "Edit"
 
   constructor(private userService: UserService) {
   }
@@ -21,8 +24,9 @@ export class UserInterestsComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  edit(): void {
-    this.isEdit = true;
+  editOrCancel(): void {
+    this.isEdit = !this.isEdit;
+    this.btnText = this.isEdit ? "Cancel" : "Edit";
   }
 
   save(): void {
@@ -30,13 +34,19 @@ export class UserInterestsComponent implements OnInit {
       this.isEdit = false;
       this.userService.editInterest(this.userId, this.interest)
         .subscribe((res) => {
-          if (res.statusCode === 200) {
-            console.log("Saved")
-          }
+          //TODO: Handle success
         }, error => {
           //TODO: Popup error msg
           console.log(error);
         })
+    }
+  }
+
+  delete(): void {
+    if (this.interest) {
+      this.userService
+        .deleteInterest(this.userId, this.interest)
+      this.deleted.emit(this.interest.id);
     }
   }
 }

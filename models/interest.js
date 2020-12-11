@@ -1,21 +1,23 @@
-
 class Interest {
-    lang;
+
+    static id = 0;
+    id;
+    language;
     level;
 
-    constructor(jsonInt) {
-        this.lang = jsonInt.language;
-        this.level = jsonInt.level;
+    constructor(props) {
+        this.language = props.language;
+        this.level = props.level;
+        this.id = (Interest.id += 1);
     }
 
     getLanguage() {
-        return this.lang;
+        return this.language;
     }
 
     getLevel() {
         return this.level
     }
-
 }
 
 module.exports = {

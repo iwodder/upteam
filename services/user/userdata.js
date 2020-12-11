@@ -28,8 +28,8 @@ const preferences = [
 
         id: 1,
         interests: [
-            new Interest({"language": "Java", "level": "medium"}),
-            new Interest({"language": "Structured Query Language", "level": "advanced"})
+            new Interest({"language": "Java", "level": "INTERMEDIATE"}),
+            new Interest({"language": "Structured Query Language", "level": "ADVANCED"})
         ]
     },
     {
@@ -62,6 +62,16 @@ function addInterest(userId, interest) {
     }
 }
 
+function editInterest(userId, interest) {
+    let idx = preferences.findIndex(value => value.id === Number(userId))
+    if (idx > -1) {
+        let i = preferences[idx].interests.findIndex(i =>
+            i.language.toLocaleLowerCase() === interest.language.toLocaleLowerCase())
+        preferences[idx].interests[i] = interest;
+        return true;
+    }
+}
+
 function getUserFromEmail(email) {
     let idx = users.findIndex(value => value.email === email)
     if (idx > -1) {
@@ -72,7 +82,7 @@ function getUserFromEmail(email) {
 }
 
 function getUserFromId(id) {
-    let idx = users.findIndex(v => v.id === id)
+    let idx = users.findIndex(v => v.id === Number(id))
     if (idx > -1) {
         return new User(users[idx])
     } else {
@@ -80,10 +90,28 @@ function getUserFromId(id) {
     }
 }
 
+function deleteInterest(userId, interestId) {
+    let userInterestIdx = preferences.findIndex(v => v.id === Number(userId));
+    if (userInterestIdx > -1) {
+        let userInterests = preferences[userInterestIdx].interests;
+        let interestIdx = userInterests.findIndex(v => v.id === Number(interestId))
+        if (interestIdx > -1) {
+            userInterests.splice(interestIdx, 1)
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 module.exports = {
     isValid,
     getInterest,
     addInterest,
+    editInterest,
+    deleteInterest,
     getUserFromEmail,
     getUserFromId
 }

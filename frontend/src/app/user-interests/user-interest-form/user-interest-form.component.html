@@ -3,6 +3,7 @@
     <div class="align-self-center">
       <input [(ngModel)]="interest.language" type="text" id="language" class="form-control-sm m-1 p-1" required>
       <select [(ngModel)]="interest.level" id="level" class="form-control-sm m-1 p-1" required>
+        <option value="" [selected]="true" [disabled]="true">Select a level</option>
         <option *ngFor="let lvl of levels" [ngValue]="lvl.name">{{lvl.desc}}</option>
       </select>
     </div>

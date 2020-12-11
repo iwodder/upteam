@@ -1,10 +1,12 @@
 export class Interest {
 
-  lang: string;
+  id: number;
+  language: string;
   level: string;
 
   constructor(props: any) {
-    this.lang = props.language;
+    this.id = props.id;
+    this.language = props.language;
     this.level = props.level;
   }
 }

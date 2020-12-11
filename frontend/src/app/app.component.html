@@ -1,4 +1,17 @@
-<h1>{{title}}</h1>
+<div class="container-xl">
+  <div class="container-lg p-2">
+    <div class="d-flex flex-row align-items-center justify-content-between">
+      <div class="justify-content-lg-start">
+        <h1 class="fs-1 mr-5">{{title}}</h1>
+      </div>
+      <div class="btn-group justify-content-end ml-5">
+        <button class="btn btn-primary" (click)="showLogin()">Login</button>
+      </div>
+    </div>
+  </div>
+  <br/>
+  <div class="container-xl">
+    <app-userdetails [user]="user"></app-userdetails>
+  </div>
+</div>
 
-<button (click)="showLogin()">Login</button>
-<app-userdetails [user]="user"></app-userdetails>
