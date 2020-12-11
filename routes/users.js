@@ -7,6 +7,8 @@ const {
   validateToken, userDetailsById
 } = require('../services/user/userservice');
 
+const errMsg = "Error processing request, try again later.";
+
 router.get('/login', (req, res) => {
   res.render('userviews/login.pug')
 })
@@ -39,6 +41,7 @@ router.get('/:userId/interests', jwt.authentication, (req, res) => {
   }
 })
 
+//TODO: Update this route to use interest id for updates
 router.put('/:userId/interests', (req, res) => {
   if (updateInterest(req.params.userId, req.body)) {
     res.send(userDetailsById(req.params.userId))
@@ -48,13 +51,20 @@ router.put('/:userId/interests', (req, res) => {
 })
 
 router.post('/:userId/interests', (req, res) => {
-  if (createInterest(req.params.userId, req.body)) {
-    res.send(userDetailsById(req.params.userId))
-  } else {
-    res.send("Please try again")
+  try {
+    let result = createInterest(req.params.userId, req.body);
+    if (result) {
+      res.status(200);
+      res.send(result)
+    } else {
+      res.status(404);
+      res.send("Not found")
+    }
+  } catch (Error) {
+    res.status(500);
+    res.send(errMsg)
   }
 })
-
 router.delete('/:userId/interests/:interestId', (req, res) => {
   try {
     if (deleteInterest(req.params.userId, req.params.interestId)) {
@@ -66,7 +76,7 @@ router.delete('/:userId/interests/:interestId', (req, res) => {
     }
   } catch (Error) {
     res.status(500);
-    res.send("Error processing request, try again later.")
+    res.send(errMsg)
   }
 })
 

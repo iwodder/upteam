@@ -39,7 +39,7 @@ function interests(id) {
 }
 
 function createInterest(userId, interest) {
-    userdata.addInterest(userId, new Interest(interest))
+   return userdata.addInterest(userId, new Interest(interest))
 }
 
 function updateInterest(userId, interests) {

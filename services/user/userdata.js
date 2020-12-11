@@ -56,9 +56,9 @@ function addInterest(userId, interest) {
     if (idx > -1) {
         let interests = preferences[idx].interests
         interests.push(interest)
-        return true
+        return interest;
     } else {
-        return false;
+        return undefined;
     }
 }
 
