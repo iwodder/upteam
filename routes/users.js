@@ -4,7 +4,7 @@ const jwt = require('../authentication')
 
 const {
   login, createInterest, updateInterest, interests, userDetailsByUsername, deleteInterest,
-  validateToken, userDetailsById
+  validateToken, userDetailsById, findUsersByLanguage
 } = require('../services/user/userservice');
 
 const errMsg = "Error processing request, try again later.";
@@ -74,6 +74,16 @@ router.delete('/:userId/interests/:interestId', (req, res) => {
       res.status(404);
       res.send("Not found")
     }
+  } catch (Error) {
+    res.status(500);
+    res.send(errMsg)
+  }
+})
+
+router.get('/interests', (req, res) => {
+  try {
+    res.status(200);
+    res.send(findUsersByLanguage(req.query))
   } catch (Error) {
     res.status(500);
     res.send(errMsg)

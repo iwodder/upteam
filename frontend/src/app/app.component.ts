@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {LoginComponent} from "./login/login.component";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {User} from "./model/user"
 
 @Component({
@@ -12,17 +12,31 @@ export class AppComponent {
   title = 'Upteam';
 
   user: User | undefined;
+  loginOpen: boolean = false;
+  modalRef: NgbModalRef | undefined;
+  foundUsers: Array<User> = []
 
   constructor(
     private modalService: NgbModal) {
   }
 
   showLogin(): void {
-    const modalRef = this.modalService.open(LoginComponent);
-    modalRef.result.then(r => {
-      this.user = new User(r);
-    })
+    if (!this.loginOpen) {
+      this.loginOpen = true;
+      this.modalRef = this.modalService.open(LoginComponent);
+      this.modalRef.result.then(r => {
+        this.user = new User(r);
+      })
+    } else {
+      if (this.modalRef) {
+        this.loginOpen = false;
+        this.modalRef.close()
+      }
+    }
   }
 
+  found(results: Array<User>): void {
+    this.foundUsers = results;
+  }
 }
 

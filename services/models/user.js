@@ -16,7 +16,11 @@ class User {
     }
 
     addInterests(interests) {
-        interests.forEach(i => this.interests.push(i))
+        interests.forEach(i => this.interests.push(i));
+    }
+
+    addInterest(interest) {
+        this.interests.push(interest);
     }
 }
 

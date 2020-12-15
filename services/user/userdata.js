@@ -1,5 +1,5 @@
-const {Interest} = require ('../../models/interest')
-const {User} = require('../../models/user')
+const {Interest} = require ('../models/interest')
+const {User} = require('../models/user')
 
 const users = [
     {
@@ -25,7 +25,6 @@ const users = [
 
 const preferences = [
     {
-
         id: 1,
         interests: [
             new Interest({"language": "Java", "level": "INTERMEDIATE"}),
@@ -106,6 +105,37 @@ function deleteInterest(userId, interestId) {
     }
 }
 
+function getUsersByInterest(term) {
+    let interest = String(term).toLowerCase();
+    let results = [];
+
+    users.forEach(user => {
+        let prefIdx = preferences.findIndex(v => v.id === user.id);
+        preferences[prefIdx].interests.forEach(pref => {
+            if (pref.language.toLowerCase() === interest) {
+                let u = new User(user);
+                u.addInterest(pref);
+                results.push(u)
+            }
+        })
+    })
+    return results;
+}
+
+function getLanguages() {
+    let results = [];
+
+    preferences.forEach(v => {
+        v.interests.forEach(i => {
+            let lang = i.language;
+            if (results.indexOf(lang) === -1) {
+                results.push(lang)
+            }
+        })
+    });
+    return results;
+}
+
 module.exports = {
     isValid,
     getInterest,
@@ -113,5 +143,7 @@ module.exports = {
     editInterest,
     deleteInterest,
     getUserFromEmail,
-    getUserFromId
+    getUserFromId,
+    getUsersByInterest,
+    getLanguages
 }

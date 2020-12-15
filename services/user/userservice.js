@@ -1,7 +1,7 @@
 var userdata = require('./userdata')
 var jwt = require('jsonwebtoken')
 
-const {Interest} = require("../../models/interest");
+const {Interest} = require("../models/interest");
 
 const secretVal = 'somesupersecret' //Not secure
 
@@ -75,6 +75,12 @@ function deleteInterest(userId, interestId) {
     }
 }
 
+function findUsersByLanguage(queryParams) {
+    if (queryParams.language) {
+        return userdata.getUsersByInterest(queryParams.language)
+    }
+}
+
 function validateToken(token, userId) {
     if (token) {
         let payload =  jwt.verify(token, secretVal)
@@ -91,7 +97,8 @@ module.exports = {
     deleteInterest,
     userDetailsByUsername,
     validateToken,
-    userDetailsById
+    userDetailsById,
+    findUsersByLanguage
 }
 
 

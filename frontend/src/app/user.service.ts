@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Login} from "./login/login";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {User} from "./model/user";
 import {Interest} from "./model/interest";
 import {Observable} from "rxjs";
@@ -70,6 +70,17 @@ export class UserService {
     return this.client.get<Array<Level>>(
       '/levels'
     );
+  }
+
+  getLanguages(): Observable<Array<String>> {
+    return this.client.get<Array<String>>('/languages');
+  }
+
+  searchByLanguage(language: String) :Observable<Array<User>> {
+    const opts = {params: new HttpParams({fromString: `language=${language}`})}
+    return this.client.get<Array<User>>(
+      '/users/interests', opts
+    )
   }
 
   private getToken(): string {

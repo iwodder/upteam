@@ -10,8 +10,11 @@
     </div>
   </div>
   <br/>
-  <div class="container-xl">
-    <app-userdetails [user]="user"></app-userdetails>
+  <div class="container-lg">
+    <app-userdetails (foundUsers)="found($event)" [user]="user"></app-userdetails>
+  </div>
+  <div class="container-lg">
+    <app-user-search-results [users]="foundUsers"></app-user-search-results>
   </div>
 </div>
 

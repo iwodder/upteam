@@ -10,6 +10,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserdetailsComponent } from './userdetails/userdetails.component';
 import { UserInterestsComponent } from './user-interests/user-interests.component';
 import { UserInterestFormComponent } from './user-interests/user-interest-form/user-interest-form.component';
+import { ManagerPanelComponent } from './user-interests/manager-panel/manager-panel.component';
+import { UserSearchResultsComponent } from './user-search-results/user-search-results.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { UserInterestFormComponent } from './user-interests/user-interest-form/u
     LoginComponent,
     UserdetailsComponent,
     UserInterestsComponent,
-    UserInterestFormComponent
+    UserInterestFormComponent,
+    ManagerPanelComponent,
+    UserSearchResultsComponent
   ],
   imports: [
     BrowserModule,

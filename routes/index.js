@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const {getLanguages} = require('../services/indexservice')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -7,6 +8,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/levels', (req, res) => {
+    res.status(200)
     res.send([
         {
             name: "BEGINNER",
@@ -25,4 +27,15 @@ router.get('/levels', (req, res) => {
             desc: "Expert (5yrs>)"
         }])
 })
+
+router.get('/languages', (req, res) => {
+    try {
+        res.status(200)
+        res.send(getLanguages())
+    } catch (Error) {
+        res.status(500)
+        res.send("Error getting languages")
+    }
+})
+
 module.exports = router;

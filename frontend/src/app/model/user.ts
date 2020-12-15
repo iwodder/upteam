@@ -18,4 +18,8 @@ export class User {
       return new Interest(interest);
     });
   }
+
+  isManager(): boolean {
+    return this.roles.indexOf("manager") != -1;
+  }
 }
