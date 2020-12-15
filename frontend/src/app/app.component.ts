@@ -21,11 +21,15 @@ export class AppComponent {
   }
 
   showLogin(): void {
+    if (this.user) {
+      this.logout();
+    }
     if (!this.loginOpen) {
       this.loginOpen = true;
       this.modalRef = this.modalService.open(LoginComponent);
       this.modalRef.result.then(r => {
         this.user = new User(r);
+        this.loginOpen = false;
       })
     } else {
       if (this.modalRef) {
@@ -37,6 +41,10 @@ export class AppComponent {
 
   found(results: Array<User>): void {
     this.foundUsers = results;
+  }
+
+  logout(): void {
+    this.user = undefined;
   }
 }
 

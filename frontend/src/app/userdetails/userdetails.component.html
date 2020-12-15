@@ -6,7 +6,7 @@
     <div class="btn-group-sm mt-3">
       <button type="button" class="btn btn-outline-primary m-1" (click)="interests.toggle()">View Interests</button>
       <button type="button" class="btn btn-outline-primary m-1" (click)="add.toggle()">Add Interest</button>
-      <button *ngIf="user && user.isManager()" type="button" class="btn btn-outline-primary m-1" (click)="find.toggle()">
+      <button *ngIf="user && user.isManager()" type="button" class="btn btn-outline-primary m-1" (click)="openFind(); find.toggle()">
         Find Users</button>
     </div>
     <div #add="ngbCollapse" [(ngbCollapse)]="hideAdd" class="m-1">

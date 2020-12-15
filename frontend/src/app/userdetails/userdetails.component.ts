@@ -28,13 +28,16 @@ export class UserdetailsComponent implements OnInit {
       .subscribe((data) => {
         data.forEach(d => this.levels.push(new Level(d)))
       })
-    this.userService.getLanguages().subscribe(data => {
-      data.forEach(s => this.languages.push(s))
-    })
   }
 
   addInterest(): void {
     this.hideAdd = false;
+  }
+
+  openFind(): void {
+    this.userService.getLanguages().subscribe(data => {
+      data.forEach(s => this.languages.push(s))
+    })
   }
 
   interest(): Interest {
