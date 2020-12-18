@@ -1,5 +1,17 @@
-const {Interest} = require ('../models/interest')
+const {Interest} = require('../models/interest')
 const {User} = require('../models/user')
+const mongo = require('mongodb')
+const url = 'mongodb://191.168.0.25:27017/upteam'
+mongo.MongoClient.connect(url, storeDb)
+
+const state = {
+    db: null
+}
+
+function storeDb(err, db) {
+    if (err) throw err;
+    state.db = db.db();
+}
 
 const users = [
     {
@@ -37,28 +49,26 @@ const preferences = [
     }
 ]
 
-function isValid(name, pass) {
-    return users.filter( value =>
-        value.email === name && value.password === pass
-    ).length > 0
-}
-
-function getInterest(userId) {
-    let idx = preferences.findIndex(value => value.id === Number(userId))
-    if (idx > -1) {
-        return preferences[idx].interests
+function getInterests(userId) {
+    if (state.db) {
+        return state.db.collection('interests')
+            .findOne({"id": String(userId)})
     }
 }
 
-function addInterest(userId, interest) {
-    let idx = preferences.findIndex(value => value.id === Number(userId))
-    if (idx > -1) {
-        let interests = preferences[idx].interests
-        interests.push(interest)
-        return interest;
-    } else {
-        return undefined;
+async function addInterest(userId, interest) {
+    let i = await checKIfIdExists(userId, interest);
+    while(i != null) {
+        i = await checKIfIdExists(userId, interest.generateId());
     }
+
+    return state.db.collection('interests')
+        .updateOne({"id": String(userId)}, {$push: {"interests": interest}});
+}
+
+async function checKIfIdExists(userId, interest) {
+    return await state.db.collection('interests')
+        .findOne({ $and: [{"id": userId}, {"interests.id": {$eq: interest.id}}]})
 }
 
 function editInterest(userId, interest) {
@@ -72,11 +82,11 @@ function editInterest(userId, interest) {
 }
 
 function getUserFromEmail(email) {
-    let idx = users.findIndex(value => value.email === email)
-    if (idx > -1) {
-        return new User(users[idx]);
+    if (state.db) {
+        return state.db.collection('user')
+            .findOne({"email": email});
     } else {
-        return null;
+        throw new Error("Unable to initialize MongoDB connection")
     }
 }
 
@@ -90,36 +100,52 @@ function getUserFromId(id) {
 }
 
 function deleteInterest(userId, interestId) {
-    let userInterestIdx = preferences.findIndex(v => v.id === Number(userId));
-    if (userInterestIdx > -1) {
-        let userInterests = preferences[userInterestIdx].interests;
-        let interestIdx = userInterests.findIndex(v => v.id === Number(interestId))
-        if (interestIdx > -1) {
-            userInterests.splice(interestIdx, 1)
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
+    return state.db.collection('interests')
+        .deleteOne({$and: [{"id": String(userId)}, {"interests.id": {$eq: Number(interestId)}}]})
 }
 
 function getUsersByInterest(term) {
-    let interest = String(term).toLowerCase();
-    let results = [];
+    // return state.db.collection('interests')
+    //     .find({"interests.language": {$eq: term}}).toArray()
 
-    users.forEach(user => {
-        let prefIdx = preferences.findIndex(v => v.id === user.id);
-        preferences[prefIdx].interests.forEach(pref => {
-            if (pref.language.toLowerCase() === interest) {
-                let u = new User(user);
-                u.addInterest(pref);
-                results.push(u)
+    return state.db.collection('interests')
+        .aggregate([
+            {
+                '$lookup': {
+                    'from': 'user',
+                    'localField': 'id',
+                    'foreignField': 'id',
+                    'as': 'user'
+                }
+            }, {
+                '$project': {
+                    'id': 1,
+                    'user': 2,
+                    'interests': {
+                        '$filter': {
+                            'input': '$interests',
+                            'as': 'i',
+                            'cond': {
+                                '$eq': [
+                                    '$$i.language', 'Java'
+                                ]
+                            }
+                        }
+                    }
+                }
+            }, {
+                '$unwind': {
+                    'path': '$user',
+                    'preserveNullAndEmptyArrays': false
+                }
+            }, {
+                '$project': {
+                    'id': 1,
+                    'user.name': 1,
+                    'interests': 1
+                }
             }
-        })
-    })
-    return results;
+        ]).toArray();
 }
 
 function getLanguages() {
@@ -137,8 +163,7 @@ function getLanguages() {
 }
 
 module.exports = {
-    isValid,
-    getInterest,
+    getInterests,
     addInterest,
     editInterest,
     deleteInterest,

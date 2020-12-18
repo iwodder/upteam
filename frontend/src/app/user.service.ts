@@ -78,6 +78,7 @@ export class UserService {
 
   searchByLanguage(language: String) :Observable<Array<User>> {
     const opts = {params: new HttpParams({fromString: `language=${language}`})}
+
     return this.client.get<Array<User>>(
       '/users/interests', opts
     )

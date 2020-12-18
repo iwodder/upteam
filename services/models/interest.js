@@ -1,14 +1,21 @@
 class Interest {
 
-    static id = 0;
     id;
     language;
     level;
 
     constructor(props) {
-        this.language = props.language;
-        this.level = props.level;
-        this.id = (Interest.id += 1);
+        this.language = upperCase(props.language)
+        this.level = upperCase(props.level);
+        if (props.id) {
+            this.id = props.id
+        } else {
+            this.generateId()
+        }
+    }
+
+    generateId() {
+        this.id = Math.floor((Math.random() * 1_000_000_000) + 1);
     }
 
     getLanguage() {
@@ -18,6 +25,10 @@ class Interest {
     getLevel() {
         return this.level
     }
+}
+
+function upperCase(str) {
+    return str ? String(str).toUpperCase() : "";
 }
 
 module.exports = {

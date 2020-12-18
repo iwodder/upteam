@@ -1,18 +1,18 @@
 var userdata = require('./userdata')
 var jwt = require('jsonwebtoken')
+const {User} = require("../models/user");
 
 const {Interest} = require("../models/interest");
 
 const secretVal = 'somesupersecret' //Not secure
 
-function login(requestBody) {
+function login(requestBody, user) {
     let username = requestBody.username;
     let password = requestBody.password;
 
     if (username && password) {
-        if (userdata.isValid(username, password)) {
-            let u = userdata.getUserFromEmail(username)
-            return createJwt(u);
+        if (username === user.email && password === user.password) {
+            return createJwt(user);
         } else {
             return false
         }
@@ -32,7 +32,7 @@ function createJwt(user) {
 
 function interests(id) {
     try {
-        return userdata.getInterest(id)
+        return userdata.getInterests(id)
     } catch (Error) {
         //Implement error handling
     }
@@ -50,7 +50,7 @@ function updateInterest(userId, interests) {
 function userDetailsByUsername(email) {
     if (email) {
         let user = userdata.getUserFromEmail(email);
-        user.addInterests(userdata.getInterest(user.id))
+        user.addInterests(userdata.getInterests(user.id))
         return user;
     } else {
         return null;
@@ -60,7 +60,7 @@ function userDetailsByUsername(email) {
 function userDetailsById(id) {
     if (id) {
         let user = userdata.getUserFromId(id)
-        user.addInterests(userdata.getInterest(id))
+        user.addInterests(userdata.getInterests(id))
         return user
     } else {
         return null;
@@ -88,12 +88,27 @@ function validateToken(token, userId) {
     }
 }
 
+function transformUserInterests(data) {
+    let results = [];
+    data.forEach(item => {
+        if (item.user) {
+            let user = new User(item.user);
+            if (item.interests[0]) {
+                let interest = new Interest(item.interests[0]);
+                user.addInterest(interest)
+            }
+            results.push(user)
+        }
+    })
+    return results;
+}
+
 module.exports = {
     secretVal,
     login,
     interests,
     updateInterest,
-    createInterest,
+    transformUserInterests,
     deleteInterest,
     userDetailsByUsername,
     validateToken,
