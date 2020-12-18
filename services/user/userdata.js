@@ -35,20 +35,6 @@ const users = [
     }
 ]
 
-const preferences = [
-    {
-        id: 1,
-        interests: [
-            new Interest({"language": "Java", "level": "INTERMEDIATE"}),
-            new Interest({"language": "Structured Query Language", "level": "ADVANCED"})
-        ]
-    },
-    {
-        id: 2,
-        interests: []
-    }
-]
-
 function getInterests(userId) {
     if (state.db) {
         return state.db.collection('interests')
@@ -63,7 +49,7 @@ async function addInterest(userId, interest) {
     }
 
     return state.db.collection('interests')
-        .updateOne({"id": String(userId)}, {$push: {"interests": interest}});
+        .updateOne({"id": String(userId)}, {$push: {"interests": interest}}, {upsert: true});
 }
 
 async function checKIfIdExists(userId, interest) {
@@ -72,13 +58,10 @@ async function checKIfIdExists(userId, interest) {
 }
 
 function editInterest(userId, interest) {
-    let idx = preferences.findIndex(value => value.id === Number(userId))
-    if (idx > -1) {
-        let i = preferences[idx].interests.findIndex(i =>
-            i.language.toLocaleLowerCase() === interest.language.toLocaleLowerCase())
-        preferences[idx].interests[i] = interest;
-        return true;
-    }
+
+    return state.db.collection('interests')
+        .updateOne({$and: [{"id": String(userId)}, {"interests.id": {$eq: Number(interest.id)}}]},
+            { $set: {"interest.language": interest.language, "interest.level": interest.level}})
 }
 
 function getUserFromEmail(email) {
@@ -105,9 +88,6 @@ function deleteInterest(userId, interestId) {
 }
 
 function getUsersByInterest(term) {
-    // return state.db.collection('interests')
-    //     .find({"interests.language": {$eq: term}}).toArray()
-
     return state.db.collection('interests')
         .aggregate([
             {
@@ -127,7 +107,7 @@ function getUsersByInterest(term) {
                             'as': 'i',
                             'cond': {
                                 '$eq': [
-                                    '$$i.language', 'Java'
+                                    '$$i.language', term
                                 ]
                             }
                         }
@@ -149,17 +129,26 @@ function getUsersByInterest(term) {
 }
 
 function getLanguages() {
-    let results = [];
 
-    preferences.forEach(v => {
-        v.interests.forEach(i => {
-            let lang = i.language;
-            if (results.indexOf(lang) === -1) {
-                results.push(lang)
+    return state.db.collection('interests')
+        .aggregate([
+            {
+                '$project': {
+                    'interests': 1
+                }
+            }, {
+                '$unwind': {
+                    'path': '$interests'
+                }
+            }, {
+                '$group': {
+                    '_id': null,
+                    'languages': {
+                        '$addToSet': '$interests.language'
+                    }
+                }
             }
-        })
-    });
-    return results;
+        ]).toArray();
 }
 
 module.exports = {

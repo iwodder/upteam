@@ -38,33 +38,9 @@ function interests(id) {
     }
 }
 
-function createInterest(userId, interest) {
-   return userdata.addInterest(userId, new Interest(interest))
-}
-
 function updateInterest(userId, interests) {
     let interest = new Interest(interests);
     return userdata.editInterest(userId, interest)
-}
-
-function userDetailsByUsername(email) {
-    if (email) {
-        let user = userdata.getUserFromEmail(email);
-        user.addInterests(userdata.getInterests(user.id))
-        return user;
-    } else {
-        return null;
-    }
-}
-
-function userDetailsById(id) {
-    if (id) {
-        let user = userdata.getUserFromId(id)
-        user.addInterests(userdata.getInterests(id))
-        return user
-    } else {
-        return null;
-    }
 }
 
 function deleteInterest(userId, interestId) {
@@ -78,13 +54,6 @@ function deleteInterest(userId, interestId) {
 function findUsersByLanguage(queryParams) {
     if (queryParams.language) {
         return userdata.getUsersByInterest(queryParams.language)
-    }
-}
-
-function validateToken(token, userId) {
-    if (token) {
-        let payload =  jwt.verify(token, secretVal)
-        return Number(userId) === payload.userId
     }
 }
 
@@ -103,16 +72,38 @@ function transformUserInterests(data) {
     return results;
 }
 
+function processLogin(req, res, data) {
+    let token = login(req.body, data);
+    if (token) {
+        res.header('Authorization', token)
+        let result = new User(data);
+        userdata.getInterests(result.id)
+            .then(r => {
+                result.addInterests(processInterests(r));
+                res.status(200)
+                res.send(result);
+            })
+    } else {
+        res.status(401)
+        res.send("Unauthorized")
+    }
+}
+
+function processInterests(i) {
+    let results = [];
+    i.interests.forEach(v => results.push(new Interest(v)))
+    return results;
+}
+
 module.exports = {
     secretVal,
+    processLogin,
+    processInterests,
     login,
     interests,
     updateInterest,
     transformUserInterests,
     deleteInterest,
-    userDetailsByUsername,
-    validateToken,
-    userDetailsById,
     findUsersByLanguage
 }
 

@@ -1,11 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const {getLanguages} = require('../services/indexservice')
-
-/* GET home page. */
-router.get('/', function (req, res, next) {
-    res.render('index', {title: 'Express'});
-});
+const userdata = require("../services/user/userdata");
 
 router.get('/levels', (req, res) => {
     res.status(200)
@@ -29,13 +24,14 @@ router.get('/levels', (req, res) => {
 })
 
 router.get('/languages', (req, res) => {
-    try {
+    userdata.getLanguages().then(r => {
+        console.log(r);
         res.status(200)
-        res.send(getLanguages())
-    } catch (Error) {
+        res.send(r[0].languages)
+    }).catch(err => {
         res.status(500)
-        res.send("Error getting languages")
-    }
+        res.send("ERROR")
+    })
 })
 
 module.exports = router;

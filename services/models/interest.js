@@ -18,10 +18,6 @@ class Interest {
         this.id = Math.floor((Math.random() * 1_000_000_000) + 1);
     }
 
-    getLanguage() {
-        return this.language;
-    }
-
     getLevel() {
         return this.level
     }
