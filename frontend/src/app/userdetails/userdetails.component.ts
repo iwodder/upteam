@@ -18,6 +18,7 @@ export class UserdetailsComponent implements OnInit {
   levels: Array<Level> = []
   languages: Array<String> = []
   hideAdd: boolean = true;
+  hideFind: boolean = true;
   searchLang: String = ""
 
   constructor(private userService: UserService) {
@@ -36,7 +37,10 @@ export class UserdetailsComponent implements OnInit {
 
   openFind(): void {
     this.userService.getLanguages().subscribe(data => {
-      data.forEach(s => this.languages.push(s))
+      this.languages = [];
+      data.forEach(s => {
+        this.languages.push(s)
+      })
     })
   }
 

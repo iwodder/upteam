@@ -9,6 +9,17 @@
       <button *ngIf="user && user.isManager()" type="button" class="btn btn-outline-primary m-1" (click)="openFind(); find.toggle()">
         Find Users</button>
     </div>
+    <div #find="ngbCollapse" [(ngbCollapse)]="hideFind" class="m-1">
+      <div class="card" *ngIf="user && user.isManager()">
+        <div class="card-body">
+          <label for="language">Language</label>
+          <select [(ngModel)]="searchLang" id="language" class="form-control-sm m-1 p-1" required>
+            <option *ngFor="let l of languages" [value]="l">{{l}}</option>
+          </select>
+          <button class="btn btn-outline-primary m-1" (click)="search()">Search</button>
+        </div>
+      </div>
+    </div>
     <div #add="ngbCollapse" [(ngbCollapse)]="hideAdd" class="m-1">
       <div class="card">
         <div class="card-body">
@@ -23,17 +34,6 @@
         <div class="card-body">
           <app-user-interests (deleted)="deleted($event)" [interest]="i" [userId]="user.id" [levels]="levels">
           </app-user-interests>
-        </div>
-      </div>
-    </div>
-    <div #find="ngbCollapse" [(ngbCollapse)]="isCollapsed" class="m-1">
-      <div class="card" *ngIf="user && user.isManager()">
-        <div class="card-body">
-          <label for="language">Language</label>
-          <select [(ngModel)]="searchLang" id="language" class="form-control-sm m-1 p-1" required>
-            <option *ngFor="let l of languages" [value]="l">{{l}}</option>
-          </select>
-          <button class="btn btn-outline-primary m-1" (click)="search()">Search</button>
         </div>
       </div>
     </div>

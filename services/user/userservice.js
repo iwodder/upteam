@@ -79,7 +79,9 @@ function processLogin(req, res, data) {
         let result = new User(data);
         userdata.getInterests(result.id)
             .then(r => {
-                result.addInterests(processInterests(r));
+                if (r) {
+                    result.addInterests(processInterests(r));
+                }
                 res.status(200)
                 res.send(result);
             })
@@ -91,7 +93,9 @@ function processLogin(req, res, data) {
 
 function processInterests(i) {
     let results = [];
-    i.interests.forEach(v => results.push(new Interest(v)))
+    if (i.interests) {
+        i.interests.forEach(v => results.push(new Interest(v)))
+    }
     return results;
 }
 

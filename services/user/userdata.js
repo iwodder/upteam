@@ -84,7 +84,16 @@ function getUserFromId(id) {
 
 function deleteInterest(userId, interestId) {
     return state.db.collection('interests')
-        .deleteOne({$and: [{"id": String(userId)}, {"interests.id": {$eq: Number(interestId)}}]})
+        .update({
+            "id": String(userId)
+        },
+        {
+            $pull: {
+                'interests': {
+                    'id': Number(interestId)
+                }
+            }
+        })
 }
 
 function getUsersByInterest(term) {
