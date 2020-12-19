@@ -1,39 +1,23 @@
-const {Interest} = require('../models/interest')
-const {User} = require('../models/user')
 const mongo = require('mongodb')
-const url = 'mongodb://191.168.0.25:27017/upteam'
-mongo.MongoClient.connect(url, storeDb)
+const url = 'mongodb://root:example@mongo:27017'
+const client = mongo.MongoClient(url, {
+    reconnectTries: 30,
+    reconnectInterval: 30_000
+})
 
 const state = {
     db: null
 }
 
 function storeDb(err, db) {
-    if (err) throw err;
-    state.db = db.db();
-}
-
-const users = [
-    {
-        id: 1,
-        email: "john.smith@gmail.com",
-        name: "John Smith",
-        password: "passw0rd",
-        company: "Company XYZ",
-        roles: [
-            "user"
-        ]
-    },
-    {
-        id: 2,
-        email: "jane.smith@gmail.com",
-        password: "abc123",
-        company: "ABC Corp.",
-        roles: [
-            "user", "manager"
-        ]
+    if (err) {
+        console.log(err)
+        // throw err;
     }
-]
+    if (db) {
+        state.db = db.db('upteam');
+    }
+}
 
 function getInterests(userId) {
     if (state.db) {
@@ -43,16 +27,16 @@ function getInterests(userId) {
 }
 
 async function addInterest(userId, interest) {
-    let i = await checKIfIdExists(userId, interest);
+    let i = await checkIfIdExists(userId, interest);
     while(i != null) {
-        i = await checKIfIdExists(userId, interest.generateId());
+        i = await checkIfIdExists(userId, interest.generateId());
     }
 
     return state.db.collection('interests')
         .updateOne({"id": String(userId)}, {$push: {"interests": interest}}, {upsert: true});
 }
 
-async function checKIfIdExists(userId, interest) {
+async function checkIfIdExists(userId, interest) {
     return await state.db.collection('interests')
         .findOne({ $and: [{"id": userId}, {"interests.id": {$eq: interest.id}}]})
 }
@@ -64,22 +48,12 @@ function editInterest(userId, interest) {
             { $set: {"interest.language": interest.language, "interest.level": interest.level}})
 }
 
-function getUserFromEmail(email) {
-    if (state.db) {
-        return state.db.collection('user')
-            .findOne({"email": email});
-    } else {
-        throw new Error("Unable to initialize MongoDB connection")
+async function getUserFromEmail(email) {
+    if (!state.db) {
+        await client.connect(storeDb);
     }
-}
-
-function getUserFromId(id) {
-    let idx = users.findIndex(v => v.id === Number(id))
-    if (idx > -1) {
-        return new User(users[idx])
-    } else {
-        return null;
-    }
+    return state.db.collection('user')
+        .findOne({"email": email});
 }
 
 function deleteInterest(userId, interestId) {
@@ -166,7 +140,7 @@ module.exports = {
     editInterest,
     deleteInterest,
     getUserFromEmail,
-    getUserFromId,
     getUsersByInterest,
     getLanguages
 }
+
