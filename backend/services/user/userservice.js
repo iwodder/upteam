@@ -63,10 +63,11 @@ function transformUserInterests(data) {
         if (item.user) {
             let user = new User(item.user);
             if (item.interests[0]) {
+                console.log(item.interests[0])
                 let interest = new Interest(item.interests[0]);
                 user.addInterest(interest)
+                results.push(user)
             }
-            results.push(user)
         }
     })
     return results;

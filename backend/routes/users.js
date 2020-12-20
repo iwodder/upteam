@@ -67,7 +67,7 @@ router.delete('/:userId/interests/:interestId', (req, res) => {
     try {
         userdata.deleteInterest(req.params.userId, req.params.interestId)
             .then(result => {
-                if (r.result.nModified === 1 && r.result.ok === 1) {
+                if (result.result.nModified === 1 && result.result.ok === 1) {
                     res.status(200);
                     res.send("Success");
                 } else {

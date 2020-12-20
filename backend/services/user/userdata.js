@@ -1,9 +1,8 @@
 const mongo = require('mongodb')
 const url = 'mongodb://root:example@mongo:27017'
 const client = mongo.MongoClient(url, {
-    reconnectTries: 30,
-    reconnectInterval: 30_000
-})
+    useUnifiedTopology: true
+}).connect(storeDb);
 
 const state = {
     db: null
@@ -50,7 +49,10 @@ function editInterest(userId, interest) {
 
 async function getUserFromEmail(email) {
     if (!state.db) {
-        await client.connect(storeDb);
+        await client.connect()
+            .then(r => {
+                state.db = r.db('upteam');
+            });
     }
     return state.db.collection('user')
         .findOne({"email": email});
