@@ -31,10 +31,6 @@ export class UserdetailsComponent implements OnInit {
       })
   }
 
-  addInterest(): void {
-    this.hideAdd = false;
-  }
-
   openFind(): void {
     this.userService.getLanguages().subscribe(data => {
       this.languages = [];

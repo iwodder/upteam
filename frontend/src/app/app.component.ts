@@ -45,6 +45,7 @@ export class AppComponent {
 
   logout(): void {
     this.user = undefined;
+    this.foundUsers.splice(0, this.foundUsers.length);
   }
 }
 

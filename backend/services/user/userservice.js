@@ -111,5 +111,3 @@ module.exports = {
     deleteInterest,
     findUsersByLanguage
 }
-
-

@@ -1,7 +1,6 @@
 <div class="container-md m-1" *ngIf="users.length > 0">
   <h2 class="text-black-50">Search Results</h2>
-  <table class="table table-striped mt-1
-">
+  <table class="table table-striped mt-1">
     <thead>
     <tr>
       <th scope="col">#</th>
@@ -11,8 +10,8 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let user of users">
-      <th scope="row">{{user.id}}</th>
+    <tr *ngFor="let user of users; index as i">
+      <th scope="row">{{i + 1}}</th>
       <td>{{user.name | uppercase}}</td>
       <td>{{user.interest[0].language | uppercase}}</td>
       <td>{{user.interest[0].level | uppercase}}</td>
