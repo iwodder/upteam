@@ -3,7 +3,7 @@
 Simple web-application to help track the interests of users related to programming languages.
 Allows managers to query users of their organization to see where skills are distributed.
 
-# Run
+# run
 Development requires docker and docker-compose. To develop, checkout and from root project directory run 
   - docker-compose up
 
